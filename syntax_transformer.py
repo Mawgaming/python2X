@@ -1,11 +1,12 @@
 import ast
+from typing import Any
 
 class EnhancedSyntaxError(Exception):
-    def __init__(self, message, line, column):
+    def __init__(self, message: str, line: int, column: int) -> None:
         super().__init__(f"{message} at line {line}, column {column}")
 
 class SyntaxTransformer(ast.NodeTransformer):
-    def visit_ListComp(self, node):
+    def visit_ListComp(self, node: ast.ListComp) -> ast.ListComp:
         try:
             for generator in node.generators:
                 if isinstance(generator.iter, ast.Call) and generator.iter.func.id == 'range':
@@ -24,25 +25,12 @@ class SyntaxTransformer(ast.NodeTransformer):
         except Exception as e:
             raise EnhancedSyntaxError("Invalid list comprehension syntax", node.lineno, node.col_offset) from e
 
-def preprocess_code(code):
+def preprocess_code(code: str) -> str:
     # Replace the new syntax with the old syntax
     return code.replace('| for', 'for').replace('| if', 'if')
 
-# Sample code to test
-code = "[x | for x in range(10) | if x % 2 == 0]"
-
-# Preprocess the code
-preprocessed_code = preprocess_code(code)
-
-# Parse the code into an AST
-tree = ast.parse(preprocessed_code)
-
-# Transform the AST
-transformer = SyntaxTransformer()
-new_tree = transformer.visit(tree)
-
 # Custom unparse function
-def custom_unparse(node):
+def custom_unparse(node: ast.AST) -> str:
     if isinstance(node, ast.Module):
         return '\n'.join(custom_unparse(stmt) for stmt in node.body)
     elif isinstance(node, ast.Expr):
@@ -83,7 +71,13 @@ def custom_unparse(node):
         return f'{target} in {iter} if {ifs}'
     return ast.dump(node)
 
-# Convert the transformed AST back to code
-new_code = custom_unparse(new_tree)
-print(new_code)
+# Ensure new_tree is properly defined and used
+if __name__ == "__main__":
+    code = "[x | for x in range(10) | if x % 2 == 0]"
+    preprocessed_code = preprocess_code(code)
+    tree = ast.parse(preprocessed_code)
+    transformer = SyntaxTransformer()
+    new_tree = transformer.visit(tree)
+    new_code = custom_unparse(new_tree)
+    print(new_code)
 

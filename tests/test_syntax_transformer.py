@@ -8,7 +8,7 @@ from syntax_transformer import SyntaxTransformer, preprocess_code, custom_unpars
 from debugging_tool import DebuggingTool
 
 class TestSyntaxTransformer(unittest.TestCase):
-    def test_list_comp(self):
+    def test_list_comp(self) -> None:
         code = "[x | for x in range(10) | if x % 2 == 0]"
         expected_code = "[x for x in range(10) if x % 2 == 0]"
 
