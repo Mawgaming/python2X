@@ -1,2 +1,2 @@
-astunparse
-
+astunparse==1.6.3
+pytest==7.1.2
