@@ -25,6 +25,11 @@ To get started with the Python Syntax Transformer, follow these steps:
    cd python_syntax_transformer
 Create and activate a virtual environment:
 
+<<<<<<< HEAD
+=======
+Create and activate a virtual environment:
+
+>>>>>>> 22d83f754c275538a56c9b51ffd44f90df1a673a
 sh
 Copy code
 python3 -m venv venv
